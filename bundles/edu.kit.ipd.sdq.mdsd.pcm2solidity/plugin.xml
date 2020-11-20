@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="edu.kit.ipd.sdq.mdsd.pcm2solidity.handler.PCM2SolidityHandler"
+            id="edu.kit.kastel.scbs.pcm2solidity.commands.createsolidity"
+            name="Create Solidity Code">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <separator
+               name="edu.kit.ipd.sdq.mdsd.pcm2solidity.beforeseparator"
+               visible="true">
+         </separator>
+         <menu
+               id="kastelSCAnalysis"
+               label="KASTEL Smart Contract Analysis">
+            <command
+                  commandId="edu.kit.kastel.scbs.pcm2solidity.commands.createsolidity"
+                  label="Create Solidity Code"
+                  style="push"
+                  tooltip="Creates Solidity Code">
+            </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <or>
+                           <test
+                                 property="org.eclipse.core.resources.name"
+                                 value="*.repository">
+                           </test>
+                           <test
+                                 property="org.eclipse.core.resources.name"
+                                 value="*.system">
+                           </test>
+                        </or>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </menu>
+         <separator
+               name="edu.kit.ipd.sdq.mdsd.pcm2solidity.afterseparator"
+               visible="true">
+         </separator>
+      </menuContribution>
+   </extension>
+
+</plugin>
