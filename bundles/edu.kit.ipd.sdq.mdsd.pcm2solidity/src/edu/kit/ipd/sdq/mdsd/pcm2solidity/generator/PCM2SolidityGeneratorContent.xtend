@@ -17,11 +17,15 @@ import org.palladiosimulator.pcm.repository.EventType
 import org.palladiosimulator.pcm.repository.OperationProvidedRole
 import org.palladiosimulator.pcm.repository.SourceRole
 import org.palladiosimulator.pcm.repository.Parameter
+import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
+import edu.kit.kastel.scbs.rbac4smartcontracts.AccessbleOperationByRole
+import org.palladiosimulator.pcm.repository.OperationRequiredRole
 
 class PCM2SolidityGeneratorContent {
 	@Accessors(PRIVATE_GETTER) BasicComponent currentTarget;
 	@Accessors(PRIVATE_GETTER, PUBLIC_SETTER) Collection<SystemComponent> currentSystem;
 	@Accessors(PRIVATE_GETTER) PCM2SolidityGeneratorHeadAndImports generatorHeadAndImports;
+	@Accessors(PRIVATE_GETTER) AccessControl4SmartContractsRepository acRepository;
 
 	new() {
 		this.generatorHeadAndImports = new PCM2SolidityGeneratorHeadAndImports;
@@ -33,22 +37,59 @@ class PCM2SolidityGeneratorContent {
 		this.currentSystem = system;
 	}
 
-	def String generateContent(BasicComponent bc, Collection<SystemComponent> systemCompoents) {
+	def String generateContent(BasicComponent bc, Collection<SystemComponent> systemComponents) {
 		java.lang.System.out.println("BC: " + bc.entityName);
 		currentTarget = bc;
-		currentSystem = systemCompoents;
+		currentSystem = systemComponents;
 
 		val importsAndClassifierHead = generatorHeadAndImports.generateImportsAndClassHead(currentTarget,
 			currentSystem);
+		val localVariables = generateLocalVariables();
 		val events = generateEventDefinitions();
 		val functions = generateMethodDefinitions();
 
 		return '''«importsAndClassifierHead»{
 			
+	«localVariables»
+			
 	«events»
 	 
 	«functions»
 } ''';
+	}
+	
+	private def String generateLocalVariables(){
+		val systemCmponent = currentSystem.findFirst[component | component.componentId.equals(currentTarget.id)];
+		var retText = "";
+		
+		
+		if(systemCmponent !== null){
+			retText = '''«FOR requiredComponent : systemCmponent.componentsRequiredForCalls»
+			«requiredComponent.targetComponentName» public «requiredComponent.targetComponentName.toLowerCase» \\TODO: Verify Name«ENDFOR»
+'''
+		}
+		
+		return retText;
+	}
+	
+	private def String generateModifierDefinitions(){
+		
+	}
+
+	private def Collection<AccessbleOperationByRole> filterOperations(){
+		var accesibleOperationsElements = new ArrayList<AccessbleOperationByRole>();
+		
+		for(element : acRepository.accessibleOperationsByRole){
+			if(element.smartContract.id.equals(currentTarget.id)){
+				val searchableElements = element.smartContract.requiredRoles_InterfaceRequiringEntity.filter(OperationRequiredRole).map[it.requiredInterface__OperationRequiredRole].map[it.signatures__OperationInterface].flatten;
+				
+				if(searchableElements.exists[x | element.operation.id.equals(x.id)]){
+					accesibleOperationsElements.add(element);
+				}
+			}
+		}
+		
+		return accesibleOperationsElements;
 	}
 
 	private def String generateMethodDefinitions() {
