@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.22.0",
  org.eclipse.xtext.builder;bundle-version="2.22.0",
  edu.kit.ipd.sdq.mdsd.ecore2txt;bundle-version="1.0.0",
  edu.kit.ipd.sdq.commons.util.pcm;bundle-version="1.5.0",
- edu.kit.ipd.sdq.commons.util.emf;bundle-version="1.5.0"
+ edu.kit.ipd.sdq.commons.util.emf;bundle-version="1.5.0",
+ edu.kit.kastel.scbs.rbac4smartcontracts;bundle-version="0.1.0"
 Bundle-Vendor: SDQ

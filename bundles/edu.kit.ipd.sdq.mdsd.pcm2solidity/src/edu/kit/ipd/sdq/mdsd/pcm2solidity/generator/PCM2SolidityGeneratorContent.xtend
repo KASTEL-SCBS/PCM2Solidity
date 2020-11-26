@@ -1,25 +1,25 @@
 package edu.kit.ipd.sdq.mdsd.pcm2solidity.generator
 
 import org.palladiosimulator.pcm.repository.BasicComponent
-import org.palladiosimulator.pcm.system.System
 import org.eclipse.xtend.lib.annotations.Accessors
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemComponent
 import java.util.Collection
 import java.util.ArrayList
 import org.palladiosimulator.pcm.repository.OperationSignature
-import org.palladiosimulator.pcm.repository.DataType
 import org.palladiosimulator.pcm.repository.PrimitiveDataType
-import static extension edu.kit.ipd.sdq.mdsd.pcm2solidity.util.PCM2SolidityConstants.*;
 import static extension edu.kit.ipd.sdq.mdsd.pcm2solidity.util.PCM2SolidityNaming.*;
 import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.CollectionDataType
 import org.palladiosimulator.pcm.repository.EventType
 import org.palladiosimulator.pcm.repository.OperationProvidedRole
 import org.palladiosimulator.pcm.repository.SourceRole
-import org.palladiosimulator.pcm.repository.Parameter
 import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
 import edu.kit.kastel.scbs.rbac4smartcontracts.AccessbleOperationByRole
 import org.palladiosimulator.pcm.repository.OperationRequiredRole
+import edu.kit.kastel.scbs.rbac4smartcontracts.Rbac4smartcontractsFactory
+import edu.kit.kastel.scbs.rbac4smartcontracts.Role
+import java.util.Set
+import java.util.HashSet
 
 class PCM2SolidityGeneratorContent {
 	@Accessors(PRIVATE_GETTER) BasicComponent currentTarget;
@@ -72,14 +72,26 @@ class PCM2SolidityGeneratorContent {
 		return retText;
 	}
 	
-	private def String generateModifierDefinitions(){
+	private def String generatePreconditionModifierDefinitions(){
 		
+		val rolesInUse = filterUsedRolesInComponent();
+		
+		return '''«FOR role : rolesInUse»
+		«generatePreconditionModifierForRole(role)»«ENDFOR»
+		'''
 	}
+	
+	//TODO: This method is not finished yet
+	private def String generatePreconditionModifierForRole(Role role)'''
+	modifier only«role.name.toFirstUpper»() {
+		require (...(msg.sender) == true,
+		"Call should only be made by the role «role.name».");
+	}
+	'''
 
-	private def Collection<AccessbleOperationByRole> filterOperations(){
+	private def Collection<AccessbleOperationByRole> filterOperationsForModifiers(){
 		var accesibleOperationsElements = new ArrayList<AccessbleOperationByRole>();
-		
-		for(element : acRepository.accessibleOperationsByRole){
+		for (element : acRepository.accessibleOperationsByRole){
 			if(element.smartContract.id.equals(currentTarget.id)){
 				val searchableElements = element.smartContract.requiredRoles_InterfaceRequiringEntity.filter(OperationRequiredRole).map[it.requiredInterface__OperationRequiredRole].map[it.signatures__OperationInterface].flatten;
 				
@@ -90,6 +102,16 @@ class PCM2SolidityGeneratorContent {
 		}
 		
 		return accesibleOperationsElements;
+	}
+	
+	private def Collection<Role> filterUsedRolesInComponent(){
+		var rolesInUse = new HashSet<Role>();
+		
+		for(element : acRepository.accessibleOperationsByRole){
+			rolesInUse.add(element.role);
+		}
+		
+		return rolesInUse;
 	}
 
 	private def String generateMethodDefinitions() {
