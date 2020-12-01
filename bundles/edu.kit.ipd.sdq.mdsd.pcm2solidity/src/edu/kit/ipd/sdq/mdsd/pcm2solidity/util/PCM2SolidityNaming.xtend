@@ -11,6 +11,8 @@ import org.palladiosimulator.pcm.repository.Signature
 import org.palladiosimulator.pcm.repository.DataType
 import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.CollectionDataType
+import edu.kit.kastel.scbs.rbac4smartcontracts.Role
+import java.util.Collection
 
 class PCM2SolidityNaming {
 
@@ -19,6 +21,21 @@ class PCM2SolidityNaming {
 
 	static def dispatch String getTargetName(NamedElement namedElement, boolean pkg) {
 		return namedElement.entityName
+	}
+	
+	static def String getModifierNameForRoles(Collection<Role> roles){
+		var modifierName = "";
+		
+		
+		for(role : roles.sortBy[x | x.name]){
+			modifierName += role.name;
+		}
+		
+		if(modifierName.empty){
+			return modifierName;
+		} 
+		
+		return roleModifierPrefix + modifierName;
 	}
 	
 	

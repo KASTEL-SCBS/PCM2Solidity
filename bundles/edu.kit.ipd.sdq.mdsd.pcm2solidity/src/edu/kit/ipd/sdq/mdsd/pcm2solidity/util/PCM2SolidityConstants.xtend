@@ -20,6 +20,8 @@ class PCM2SolidityConstants {
 	
 	static def String getNewLine() '''«System.lineSeparator»'''
 	
+	static def String roleModifierPrefix() '''only'''
+	
 	static def String getSeparator(boolean pkg) {
 		return if (pkg) "." else File.separator
 	}

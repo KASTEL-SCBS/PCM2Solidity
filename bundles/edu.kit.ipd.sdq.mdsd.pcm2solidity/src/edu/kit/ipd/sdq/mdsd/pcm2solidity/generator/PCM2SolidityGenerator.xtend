@@ -19,6 +19,7 @@ import static extension edu.kit.ipd.sdq.mdsd.pcm2solidity.util.PCM2SolidityNamin
 import java.util.Collection
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemComponent
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemStructureBuilder
+import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
 
 class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 
@@ -26,6 +27,7 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 	private Collection<SystemComponent> systemComponents;
 	private SystemStructureBuilder builder;
 	private PCM2SolidityGeneratorContent contentGenerator;
+	private AccessControl4SmartContractsRepository acRepository;
 
 	public new() {
 		this.builder = new SystemStructureBuilder;
@@ -43,7 +45,11 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 					contentGenerator.currentSystem = systemComponents;
 					return contents;
 				}
+			} else if (element instanceof AccessControl4SmartContractsRepository){
+				this.acRepository = element;
+				return contents;
 			}
+			
 
 		}
 
@@ -53,7 +59,6 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 	}
 
 	private def void generateAndAddContents(Resource resource, List<Triplet<String, String, String>> contents) {
-
 		for (element : resource.getAllContentsIterable()) {
 			if (element instanceof BasicComponent) {
 				val content = generateContent(element);
@@ -100,7 +105,8 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 			def private int fileExt2Index(String fileExt) {
 				switch fileExt {
 					case 'system': 0
-					case 'repository': 1
+					case 'rbac4smartcontracts' : 1
+					case 'repository': 2
 				}
 			}
 		})
@@ -109,7 +115,7 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 
 	private def String generateContent(EObject element) {
 		switch element {
-			BasicComponent: postProcessGeneratedContents(contentGenerator.generateContent(element, systemComponents))
+			BasicComponent: postProcessGeneratedContents(contentGenerator.generateContent(element, systemComponents, acRepository))
 			EObject: generateContentUnexpectedEObject(element)
 		}
 	}

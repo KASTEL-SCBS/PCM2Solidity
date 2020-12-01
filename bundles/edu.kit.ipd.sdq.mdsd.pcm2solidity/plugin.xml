@@ -43,6 +43,10 @@
                                  property="org.eclipse.core.resources.name"
                                  value="*.system">
                            </test>
+                           <test
+                                 property="org.eclipse.core.resources.name"
+                                 value="*.rbac4smartcontracts">
+                           </test>
                         </or>
                      </adapt>
                   </iterate>

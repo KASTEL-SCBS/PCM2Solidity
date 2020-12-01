@@ -1,5 +1,6 @@
 package edu.kit.ipd.sdq.mdsd.pcm2solidity.generator
 
+import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
 import org.palladiosimulator.pcm.repository.BasicComponent
 import org.eclipse.xtend.lib.annotations.Accessors
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemComponent
@@ -8,24 +9,18 @@ import java.util.ArrayList
 import org.palladiosimulator.pcm.repository.OperationSignature
 import org.palladiosimulator.pcm.repository.PrimitiveDataType
 import static extension edu.kit.ipd.sdq.mdsd.pcm2solidity.util.PCM2SolidityNaming.*;
+import static extension edu.kit.ipd.sdq.mdsd.pcm2solidity.util.PCMLookupUtil.*;
 import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.CollectionDataType
 import org.palladiosimulator.pcm.repository.EventType
-import org.palladiosimulator.pcm.repository.OperationProvidedRole
 import org.palladiosimulator.pcm.repository.SourceRole
-import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
-import edu.kit.kastel.scbs.rbac4smartcontracts.AccessbleOperationByRole
-import org.palladiosimulator.pcm.repository.OperationRequiredRole
-import edu.kit.kastel.scbs.rbac4smartcontracts.Rbac4smartcontractsFactory
-import edu.kit.kastel.scbs.rbac4smartcontracts.Role
-import java.util.Set
-import java.util.HashSet
 
 class PCM2SolidityGeneratorContent {
 	@Accessors(PRIVATE_GETTER) BasicComponent currentTarget;
 	@Accessors(PRIVATE_GETTER, PUBLIC_SETTER) Collection<SystemComponent> currentSystem;
 	@Accessors(PRIVATE_GETTER) PCM2SolidityGeneratorHeadAndImports generatorHeadAndImports;
 	@Accessors(PRIVATE_GETTER) AccessControl4SmartContractsRepository acRepository;
+	@Accessors(PRIVATE_GETTER) PCM2SolidityAccessControlGenerator acGenerator;
 
 	new() {
 		this.generatorHeadAndImports = new PCM2SolidityGeneratorHeadAndImports;
@@ -37,87 +32,63 @@ class PCM2SolidityGeneratorContent {
 		this.currentSystem = system;
 	}
 
-	def String generateContent(BasicComponent bc, Collection<SystemComponent> systemComponents) {
-		java.lang.System.out.println("BC: " + bc.entityName);
+	def String generateContent(BasicComponent bc, Collection<SystemComponent> systemComponents,
+		AccessControl4SmartContractsRepository acRepository) {
+
 		currentTarget = bc;
 		currentSystem = systemComponents;
-
+		
+		
+		this.acRepository = acRepository;
+		
+		if(acGenerator === null){
+			acGenerator = new PCM2SolidityAccessControlGenerator(currentTarget, acRepository, currentSystem);
+		} else {
+			acGenerator.currentTarget = currentTarget;
+			acGenerator.currentSystem = currentSystem;
+			acGenerator.acRepository = this.acRepository;	
+		}
+		
 		val importsAndClassifierHead = generatorHeadAndImports.generateImportsAndClassHead(currentTarget,
 			currentSystem);
 		val localVariables = generateLocalVariables();
 		val events = generateEventDefinitions();
 		val functions = generateMethodDefinitions();
-
+		val rolePreconditionModifiers = acGenerator.generatePreconditionModifierDefinitions();
 		return '''«importsAndClassifierHead»{
 			
 	«localVariables»
-			
-	«events»
-	 
-	«functions»
-} ''';
-	}
 	
-	private def String generateLocalVariables(){
-		val systemCmponent = currentSystem.findFirst[component | component.componentId.equals(currentTarget.id)];
+	«events»
+	
+	«functions»
+	
+	«rolePreconditionModifiers»
+} ''';
+		
+	}
+
+	private def String generateLocalVariables() {
+		val systemCmponent = findSystemComponentForCurrentTargetComponent();
 		var retText = "";
-		
-		
-		if(systemCmponent !== null){
+
+		if (systemCmponent !== null) {
 			retText = '''«FOR requiredComponent : systemCmponent.componentsRequiredForCalls»
-			«requiredComponent.targetComponentName» public «requiredComponent.targetComponentName.toLowerCase» \\TODO: Verify Name«ENDFOR»
+			«requiredComponent.targetComponentName» public «requiredComponent.targetComponentName.toFirstLower» //TODO: Verify Name«ENDFOR»
 '''
 		}
-		
+
 		return retText;
 	}
-	
-	private def String generatePreconditionModifierDefinitions(){
-		
-		val rolesInUse = filterUsedRolesInComponent();
-		
-		return '''«FOR role : rolesInUse»
-		«generatePreconditionModifierForRole(role)»«ENDFOR»
-		'''
-	}
-	
-	//TODO: This method is not finished yet
-	private def String generatePreconditionModifierForRole(Role role)'''
-	modifier only«role.name.toFirstUpper»() {
-		require (...(msg.sender) == true,
-		"Call should only be made by the role «role.name».");
-	}
-	'''
 
-	private def Collection<AccessbleOperationByRole> filterOperationsForModifiers(){
-		var accesibleOperationsElements = new ArrayList<AccessbleOperationByRole>();
-		for (element : acRepository.accessibleOperationsByRole){
-			if(element.smartContract.id.equals(currentTarget.id)){
-				val searchableElements = element.smartContract.requiredRoles_InterfaceRequiringEntity.filter(OperationRequiredRole).map[it.requiredInterface__OperationRequiredRole].map[it.signatures__OperationInterface].flatten;
-				
-				if(searchableElements.exists[x | element.operation.id.equals(x.id)]){
-					accesibleOperationsElements.add(element);
-				}
-			}
-		}
-		
-		return accesibleOperationsElements;
+	private def SystemComponent findSystemComponentForCurrentTargetComponent() {
+		return currentSystem.findFirst[component|component.componentId.equals(currentTarget.id)];
 	}
+
 	
-	private def Collection<Role> filterUsedRolesInComponent(){
-		var rolesInUse = new HashSet<Role>();
-		
-		for(element : acRepository.accessibleOperationsByRole){
-			rolesInUse.add(element.role);
-		}
-		
-		return rolesInUse;
-	}
 
 	private def String generateMethodDefinitions() {
-		val operationSignatures = currentTarget.providedRoles_InterfaceProvidingEntity.filter(OperationProvidedRole).map [
-			it.providedInterface__OperationProvidedRole
-		].map[it.signatures__OperationInterface].flatten
+		val operationSignatures = getAllProvidedOperationsFromComponent(currentTarget);
 		val methodDefinitions = generateMethodDefinitions(operationSignatures).toString;
 		return methodDefinitions;
 	}
@@ -149,7 +120,7 @@ class PCM2SolidityGeneratorContent {
 
 	private def String generateEventDefinitions(Iterable<EventType> eventTypes) '''«FOR eventtype : eventTypes»
 	«generateCommentsForEvents(eventtype)»
-	«generateEventDeclarationWithoutSemicolon(eventtype)»; // TODO: verify auto-generated parameters«ENDFOR»
+	«generateEventDeclarationWithoutSemicolon(eventtype)»; //TODO: verify auto-generated parameters«ENDFOR»
 '''
 
 	protected def String generateCommentsForMethod(OperationSignature signature) {
@@ -163,8 +134,9 @@ class PCM2SolidityGeneratorContent {
 	protected def String generateMethodDeclarationWithoutSemicolon(OperationSignature operationSignature) {
 		val returnType = generateReturn(operationSignature);
 		val methodName = operationSignature.getMethodName
+		val modifierUsages = acGenerator.generateModifierUsageDefitions(operationSignature)
 		val parameterDeclarations = '''«FOR parameter : operationSignature.parameters__OperationSignature SEPARATOR ', '»«parameter.dataType__Parameter.handleDataTypeName» «parameter.getParameterName»«ENDFOR»'''
-		return '''function «methodName»(«parameterDeclarations») «returnType»'''
+		return '''function «methodName»(«parameterDeclarations») «modifierUsages» «returnType»'''
 	}
 
 	protected def String generateEventDeclarationWithoutSemicolon(EventType eventtype) {
