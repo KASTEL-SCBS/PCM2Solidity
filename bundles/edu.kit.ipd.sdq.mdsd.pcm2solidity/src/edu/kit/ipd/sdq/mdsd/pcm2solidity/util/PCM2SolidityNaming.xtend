@@ -11,8 +11,8 @@ import org.palladiosimulator.pcm.repository.Signature
 import org.palladiosimulator.pcm.repository.DataType
 import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.CollectionDataType
-import edu.kit.kastel.scbs.rbac4smartcontracts.Role
 import java.util.Collection
+import edu.kit.kastel.scbs.rbac4smartcontracts.Role
 
 class PCM2SolidityNaming {
 

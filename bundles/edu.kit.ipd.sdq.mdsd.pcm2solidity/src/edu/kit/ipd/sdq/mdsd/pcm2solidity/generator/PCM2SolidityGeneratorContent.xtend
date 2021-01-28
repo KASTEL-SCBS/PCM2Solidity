@@ -21,7 +21,6 @@ class PCM2SolidityGeneratorContent {
 	@Accessors(PRIVATE_GETTER) PCM2SolidityGeneratorHeadAndImports generatorHeadAndImports;
 	@Accessors(PRIVATE_GETTER) AccessControl4SmartContractsRepository acRepository;
 	@Accessors(PRIVATE_GETTER) PCM2SolidityAccessControlGenerator acGenerator;
-
 	new() {
 		this.generatorHeadAndImports = new PCM2SolidityGeneratorHeadAndImports;
 		currentSystem = new ArrayList<SystemComponent>();
@@ -168,7 +167,7 @@ class PCM2SolidityGeneratorContent {
 
 		var returnedTypes = handleReturnDataType(returnType);
 
-		return '''public returns («returnedTypes»)''';
+		return '''public returns («returnedTypes» output)''';
 	}
 
 	private dispatch def String handleDataTypeName(PrimitiveDataType dt) {
@@ -203,6 +202,6 @@ class PCM2SolidityGeneratorContent {
 		return returnTypes;
 	}
 
-	private dispatch def String handleReturnDataType(CollectionDataType dt) '''«getTargetNameForDataType(dt)»[]'''
+	private dispatch def String handleReturnDataType(CollectionDataType dt) '''«getTargetNameForDataType(dt)»'''
 
 }

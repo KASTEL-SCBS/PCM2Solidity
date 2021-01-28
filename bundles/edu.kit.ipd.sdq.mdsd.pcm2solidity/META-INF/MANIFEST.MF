@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PCM2Solidity
-Bundle-SymbolicName: edu.kit.ipd.sdq.mdsd.pcm2solidity;singleton:=true
+Bundle-SymbolicName: edu.kit.kastel.sdq.mdsd.pcm2solidity;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: edu.kit.ipd.sdq.mdsd.pcm2solidity.generator,
  edu.kit.ipd.sdq.mdsd.pcm2solidity.util

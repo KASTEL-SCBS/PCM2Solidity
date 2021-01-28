@@ -2,7 +2,6 @@ package edu.kit.ipd.sdq.mdsd.pcm2solidity.generator
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.palladiosimulator.pcm.repository.BasicComponent
-import org.palladiosimulator.pcm.system.System
 import java.util.Collection
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemComponent
 

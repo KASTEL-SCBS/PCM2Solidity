@@ -5,7 +5,6 @@ import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepos
 import edu.kit.kastel.scbs.rbac4smartcontracts.Role
 import java.util.Set
 import java.util.Collection
-import edu.kit.kastel.scbs.rbac4smartcontracts.AccessibleOperationByRoles
 import java.util.ArrayList
 import java.util.HashSet
 import org.palladiosimulator.pcm.repository.OperationSignature
@@ -19,12 +18,15 @@ import org.palladiosimulator.pcm.repository.Parameter
 import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.PrimitiveDataType
 import org.palladiosimulator.pcm.repository.PrimitiveTypeEnum
+import edu.kit.kastel.scbs.rbac4smartcontracts.OperationAccessibleByRoles
 
 class PCM2SolidityAccessControlGenerator {
 
 	@Accessors(PUBLIC_SETTER) RepositoryComponent currentTarget;
 	@Accessors(PUBLIC_SETTER) AccessControl4SmartContractsRepository acRepository;
 	@Accessors(PUBLIC_SETTER) Collection<SystemComponent> currentSystem
+
+	private final String requireCheckErrorPhraseInitialPart = "Call should only be made by the following role(s): ";
 
 	new(RepositoryComponent currentTarget, AccessControl4SmartContractsRepository acRepository,
 		Collection<SystemComponent> currentSystem) {
@@ -40,13 +42,13 @@ class PCM2SolidityAccessControlGenerator {
 		return generatePreconditionModifierDefinitions(accessibleRolesForComponent);
 	}
 
-	private def Collection<AccessibleOperationByRoles> filterAccessibleOperationsByRoleForComponent(
-		Collection<AccessibleOperationByRoles> accesibleOperationsByRoles, RepositoryComponent component) {
-		return accesibleOperationsByRoles.filter[x|x.smartContract.id.equals(component.id)].toList;
+	private def Collection<OperationAccessibleByRoles> filterAccessibleOperationsByRoleForComponent(
+		Collection<OperationAccessibleByRoles> accesibleOperationsByRoles, RepositoryComponent component) {
+		return accesibleOperationsByRoles.filter[x|x.operationprovidedrole.providingEntity_ProvidedRole.id.equals(component.id)].toList;
 	}
 
 	private def String generatePreconditionModifierDefinitions(
-		Collection<AccessibleOperationByRoles> AccessibleOperationByRoles) {
+		Collection<OperationAccessibleByRoles> AccessibleOperationByRoles) {
 
 		val necessaryPermutations = generateUsedPermutationsOfRolesForMethods(AccessibleOperationByRoles);
 
@@ -57,7 +59,7 @@ class PCM2SolidityAccessControlGenerator {
 	}
 
 	private def Collection<Set<Role>> generateUsedPermutationsOfRolesForMethods(
-		Collection<AccessibleOperationByRoles> accesibleOperationByRoles) {
+		Collection<OperationAccessibleByRoles> accesibleOperationByRoles) {
 		val necessaryPermutations = new ArrayList<Set<Role>>();
 
 		for (element : accesibleOperationByRoles) {
@@ -98,19 +100,10 @@ class PCM2SolidityAccessControlGenerator {
 	private def String generatePreconditionModifierForRoles(Collection<Role> roles) {
 		val currentSystemComponent = findSystemComponentForCurrentTargetComponent(currentSystem, currentTarget);
 		val requiredOperations = getAllRequiredOperationsFromComponent(currentTarget);
-		val appliedAccessControlOperations = acRepository.accOperationDefs.filter [ x |
-			requiredOperations.exists[y|x.operation.id.equals(y.id)]
-		];
+		//val appliedAccessControlOperations = acRepository.accOperationDefs.filter [ x | requiredOperations.exists[y|x.operation.id.equals(y.id)]];
 		var errorMSG = "";
 
-		if (appliedAccessControlOperations.size > 1) {
-			errorMSG = '''
-				//Error: More than one Access Control function found in smart contract for the role permutation «roleNamesCollected(roles)». 
-				//Cannot statically distinquish between them;
-				//TODO: Manually create modifier body
-				revert("TODO: auto-generated method stub")
-			'''
-		} else if (appliedAccessControlOperations.size == 0) {
+		if (acRepository.accOperationDefs === null) {
 			errorMSG = '''
 				//Error: No access control function defined for role «roleNamesCollected(roles)» in this smart contract.
 				//Call to access control cannot be established
@@ -123,10 +116,10 @@ class PCM2SolidityAccessControlGenerator {
 			return assembleModifierForRoles(roles, errorMSG);
 		}
 
-		val targetAccessControlOperation = appliedAccessControlOperations.head;
+		val targetAccessControlOperation = acRepository.accOperationDefs;
 
-		if (targetAccessControlOperation.smartContract !== null) {
-			return assembleModifierForRoles(roles, targetAccessControlOperation.smartContract,
+		if (targetAccessControlOperation.operationprovidedrole.providingEntity_ProvidedRole !== null && targetAccessControlOperation.operationprovidedrole.providingEntity_ProvidedRole instanceof RepositoryComponent) {
+			return assembleModifierForRoles(roles, targetAccessControlOperation.operationprovidedrole.providingEntity_ProvidedRole as RepositoryComponent,
 				targetAccessControlOperation);
 		}
 
@@ -186,21 +179,33 @@ class PCM2SolidityAccessControlGenerator {
 
 	private def String createModifierBody(Collection<Role> roles, RepositoryComponent smartContract,
 		AccessControlCheckingOperation checkingOperation){
-			if(roles.size > 1 && checkingOperation.accessDeterminingParameter === null){
+			if(roles.size > 1 && checkingOperation.roleDetermining === null){
 				return '''
 				//Error: no parameter that transfers the role information is provided in generation-model
-				//Hoever multiple roles available ==> Generation of calls not Possible
+				//However multiple roles available ==> Generation of calls not Possible
 				//TODO: Manually create modifier body
 				revert("TODO: auto-generated method stub")
 				'''
 			}
 			
-			return '''«FOR role : roles AFTER '_;'»
-require («smartContract.entityName.toFirstLower».«checkingOperation.operation.entityName»(«generateParameterAssigment(role, checkingOperation)») == true,
-			"Call should only be made by the role «role.name»."); //TODO: verify auto-generated method stub
-			«ENDFOR»
-	'''
+			var requireQuery = buildAccessControlQuery(roles.get(0), smartContract, checkingOperation);
+			var x = new StringBuffer();
+			
+			for(var i = 1; i < roles.size; i++){
+				requireQuery = String.join(" || \n", requireQuery, buildAccessControlQuery(roles.get(i), smartContract, checkingOperation));
+			}
+			
+			return '''
+require(«requireQuery»,
+			"«requireCheckErrorPhraseInitialPart»«generateRequireErrorTextForRoles(roles)».");
+_;
+			'''
 		}
+		
+	def String buildAccessControlQuery(Role role, RepositoryComponent smartContract, AccessControlCheckingOperation checkingOperation){
+		return '''«smartContract.entityName.toFirstLower».«checkingOperation.operation.entityName»(«generateParameterAssigment(role, checkingOperation)») == true''';
+	}
+		
 	//TODO: Refine, however, for Demonstration Purposes good enough
 	def String generateParameterAssigment(Role role, AccessControlCheckingOperation checkingOperation) {
 		var assignment = "";
@@ -228,12 +233,16 @@ require («smartContract.entityName.toFirstLower».«checkingOperation.operation
 		return assignment;
 	}
 	
+	private def String generateRequireErrorTextForRoles(Collection<Role> roles){
+		return String.join(", ", roles.map[x | x.name]);
+	}
+	
 	private def boolean isAddressField(Parameter parameter, AccessControlCheckingOperation checkingOperation){
-		return parameter.dataType__Parameter instanceof CompositeDataType && (parameter.dataType__Parameter as CompositeDataType).entityName.toLowerCase.equals("address");
+		return parameter.dataType__Parameter instanceof CompositeDataType && (parameter.dataType__Parameter as CompositeDataType).entityName.toLowerCase.equals("address") && parameter.parameterName.equals(checkingOperation.identity.parameterName);
 	}
 	
 	private def boolean isAccessDetermining(Parameter parameter, AccessControlCheckingOperation checkingOperation){
-		return checkingOperation.accessDeterminingParameter !== null && parameter.parameterName.equals(checkingOperation.accessDeterminingParameter.parameterName);
+		return checkingOperation.roleDetermining !== null && parameter.parameterName.equals(checkingOperation.roleDetermining.parameterName);
 	}
 		
 		
@@ -242,7 +251,7 @@ require («smartContract.entityName.toFirstLower».«checkingOperation.operation
 		var rolesInUse = new HashSet<Role>();
 
 		for (element : acRepository.accessibleOperationsByRole) {
-			if (element.smartContract.id.equals(currentTarget.id)) {
+			if (element.operationprovidedrole.providingEntity_ProvidedRole.id.equals(currentTarget.id)) {
 				rolesInUse.addAll(element.role);
 			}
 		}
@@ -262,10 +271,10 @@ require («smartContract.entityName.toFirstLower».«checkingOperation.operation
 		return '''«getModifierNameForRoles(necessaryRoles)»''';
 	}
 
-	private def Collection<AccessibleOperationByRoles> filterAccessibleOperationsForOperationSignature(
+	private def Collection<OperationAccessibleByRoles> filterAccessibleOperationsForOperationSignature(
 		OperationSignature signature) {
 		var operationsForModifiersForComponent = filterOperationsForModifiersForComponent();
-		var operationsForModifiersForSignature = new HashSet<AccessibleOperationByRoles>();
+		var operationsForModifiersForSignature = new HashSet<OperationAccessibleByRoles>();
 		for (element : operationsForModifiersForComponent) {
 			if (element.operation.id.equals(signature.id)) {
 				operationsForModifiersForSignature.add(element);
@@ -275,11 +284,11 @@ require («smartContract.entityName.toFirstLower».«checkingOperation.operation
 		return operationsForModifiersForSignature;
 	}
 
-	private def Collection<AccessibleOperationByRoles> filterOperationsForModifiersForComponent() {
-		var accesibleOperationsElements = new ArrayList<AccessibleOperationByRoles>();
+	private def Collection<OperationAccessibleByRoles> filterOperationsForModifiersForComponent() {
+		var accesibleOperationsElements = new ArrayList<OperationAccessibleByRoles>();
 		for (element : acRepository.accessibleOperationsByRole) {
-			if (element.smartContract.id.equals(currentTarget.id)) {
-				val searchableElements = element.smartContract.providedRoles_InterfaceProvidingEntity.filter(
+			if (element.operationprovidedrole.providingEntity_ProvidedRole.id.equals(currentTarget.id)) {
+				val searchableElements = element.operationprovidedrole.providingEntity_ProvidedRole.providedRoles_InterfaceProvidingEntity.filter(
 					OperationProvidedRole).map[it.providedInterface__OperationProvidedRole].map [
 					it.signatures__OperationInterface
 				].flatten.toList;
