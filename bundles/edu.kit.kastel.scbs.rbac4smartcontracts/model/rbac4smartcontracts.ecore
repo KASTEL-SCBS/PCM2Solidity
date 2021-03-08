@@ -8,7 +8,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessibleOperationsByRole"
         upperBound="-1" eType="#//OperationAccessibleByRoles" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accOperationDefs" lowerBound="1"
-        eType="#//AccessControlCheckingOperation" containment="true"/>
+        eType="#//AccessControllingOperation" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="storage" upperBound="-1"
+        eType="#//Storage" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Role" eSuperTypes="../../edu.kit.ipd.sdq.composition.securityanalyses.basic/model/basic.ecore#//Entity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="alternativeEncoding" eType="#//AlternativeEncoding"
@@ -22,18 +24,31 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="operationprovidedrole"
         lowerBound="1" eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/OperationProvidedRole"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AccessControlCheckingOperation">
+  <eClassifiers xsi:type="ecore:EClass" name="AccessControllingOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="operation" lowerBound="1"
         eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/OperationSignature"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="roleDetermining" eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/Parameter"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="operationprovidedrole"
         lowerBound="1" eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/OperationProvidedRole"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="identity" eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/Parameter"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="identity" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/Parameter"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AlternativeEncoding">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" lowerBound="1"
         eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/DataType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" lowerBound="1"
-        eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+        eType="ecore:EDataType platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Storage" eSuperTypes="../../edu.kit.ipd.sdq.composition.securityanalyses.basic/model/basic.ecore#//IdentifiedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="storagevariable" upperBound="-1"
+        eType="#//StorageVariable" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="smartContract" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/BasicComponent"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StorageVariable" eSuperTypes="../../edu.kit.ipd.sdq.composition.securityanalyses.basic/model/basic.ecore#//Entity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/DataType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roles" lowerBound="1" upperBound="-1"
+        eType="#//Role"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -33,7 +33,7 @@ class PCM2SolidityGeneratorHeadAndImports {
 	}
 	
 	private def String generateImportsAndClassHead(){
-		val pragma = '''pragma solidity «solidityVersion»''' + newLine + newLine;
+		val pragma = '''pragma solidity «solidityVersion»;''' + newLine + newLine;
 		val importStatements = generateImportStatements + newLine;
 		val contractHead = '''contract «currentTarget.entityName» '''
 		

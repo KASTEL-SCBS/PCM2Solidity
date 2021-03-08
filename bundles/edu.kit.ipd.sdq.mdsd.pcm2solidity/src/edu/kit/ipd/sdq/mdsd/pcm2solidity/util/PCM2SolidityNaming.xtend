@@ -51,16 +51,6 @@ class PCM2SolidityNaming {
 		}
 	}
 	
-	static def String getTargetNameForDataType(DataType dt){
-		if(dt instanceof PrimitiveDataType){
-			return getTargetFileNameForPrimitiveDataType(dt);
-		} else if (dt instanceof CompositeDataType){
-			return dt.entityName;
-		} else if (dt instanceof CollectionDataType){
-			return dt.entityName;
-		}
-	}
-	
 	static def String getComponentsTargetPrefix(Repository repo, boolean pkg) {
 		return getRepoTargetPrefix(repo, pkg) + getSeparator(pkg) + getComponentsTargetName()
 	}
@@ -77,16 +67,28 @@ class PCM2SolidityNaming {
 		return operationSignature.entityName.toFirstLower
 	}
 	
-	static def String getTargetFileNameForPrimitiveDataType(PrimitiveDataType pdt) {
+	static dispatch def String getTargetNameForDataType(PrimitiveDataType pdt) {
 		switch pdt.getType() {
 			case PrimitiveTypeEnum::STRING : "string"
-			case PrimitiveTypeEnum::LONG : "TODO: ERROR: long"
+			case PrimitiveTypeEnum::LONG : "//TODO: ERROR: long"
 			case PrimitiveTypeEnum::INT: "int"
 			case PrimitiveTypeEnum::BOOL: "bool"
-			case PrimitiveTypeEnum::DOUBLE: "TODO: ERROR: No Double"
+			case PrimitiveTypeEnum::DOUBLE: "//TODO: ERROR: No Double"
 			case PrimitiveTypeEnum::BYTE: "byte"
-			case PrimitiveTypeEnum::CHAR: "TODO: ERROR: No Char"
+			case PrimitiveTypeEnum::CHAR: "//TODO: ERROR: No Char"
 			default : ""
 		}
+	}
+	
+	static dispatch def String getTargetNameForDataType(CollectionDataType datatype){
+		if(datatype.innerType_CollectionDataType instanceof CollectionDataType){
+			return '''//TODO: ERROR: Double collections not allowed'''
+		} else {
+			return '''«datatype.innerType_CollectionDataType.targetNameForDataType»[]'''
+		}
+	}
+	
+	static dispatch def String getTargetNameForDataType(CompositeDataType datatype){
+		return datatype.entityName;
 	}
 }

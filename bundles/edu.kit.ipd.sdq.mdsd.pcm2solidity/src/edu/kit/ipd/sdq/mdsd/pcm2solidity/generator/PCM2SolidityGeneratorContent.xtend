@@ -14,6 +14,8 @@ import org.palladiosimulator.pcm.repository.CompositeDataType
 import org.palladiosimulator.pcm.repository.CollectionDataType
 import org.palladiosimulator.pcm.repository.EventType
 import org.palladiosimulator.pcm.repository.SourceRole
+import edu.kit.kastel.scbs.rbac4smartcontracts.Storage
+import edu.kit.kastel.scbs.rbac4smartcontracts.StorageVariable
 
 class PCM2SolidityGeneratorContent {
 	@Accessors(PRIVATE_GETTER) BasicComponent currentTarget;
@@ -50,34 +52,65 @@ class PCM2SolidityGeneratorContent {
 		
 		val importsAndClassifierHead = generatorHeadAndImports.generateImportsAndClassHead(currentTarget,
 			currentSystem);
-		val localVariables = generateLocalVariables();
-		val events = generateEventDefinitions();
-		val functions = generateMethodDefinitions();
+		val verificationSupportingContent = generateVerificationSupportingContent().appendNewlineWhenNotEmpty;
+		val fields = generateFields().appendNewlineWhenNotEmpty;
+		val events = generateEventDefinitions().appendNewlineWhenNotEmpty;
+		val functions = generateMethodDefinitions().appendNewlineWhenNotEmpty;
 		val rolePreconditionModifiers = acGenerator.generatePreconditionModifierDefinitions();
 		return '''«importsAndClassifierHead»{
-			
-	«localVariables»
-	
+	«verificationSupportingContent»	
+	«fields»
 	«events»
-	
 	«functions»
-	
 	«rolePreconditionModifiers»
 } ''';
 		
 	}
 
-	private def String generateLocalVariables() {
+	private def String generateVerificationSupportingContent(){
+		return acGenerator.generateRoleEnum(currentTarget, acRepository);	
+	}
+
+	private def String generateFields() {
+		return '''«generateFieldsFromAssembly»
+		
+«generateFieldsFromStorageVariables»'''
+	}
+	
+	private def String generateFieldsFromAssembly(){
 		val systemCmponent = findSystemComponentForCurrentTargetComponent();
 		var retText = "";
 
 		if (systemCmponent !== null) {
 			retText = '''«FOR requiredComponent : systemCmponent.componentsRequiredForCalls»
-			«requiredComponent.targetComponentName» public «requiredComponent.targetComponentName.toFirstLower» //TODO: Verify Name«ENDFOR»
+			«requiredComponent.targetComponentName» «requiredComponent.targetComponentName.toFirstLower»; //TODO: Auto-generated Field, Verify!«ENDFOR»
 '''
 		}
 
 		return retText;
+	}
+	
+	private def String generateFieldsFromStorageVariables(){
+		val storages = acGenerator.getStoragesForComponent(currentTarget, acRepository);
+		val storageVariables = acGenerator.getAllStorageVariablesInStorages(storages);
+		
+		var fields = "";
+		
+		fields = '''«FOR storageVariable : storageVariables»
+		«generateRoleCommentForFields(storageVariable)»
+		«getTargetNameForDataType(storageVariable.dataType)» «storageVariable.name»; //TODO: Auto-generated Field, Verify!«ENDFOR»'''
+	}
+	
+	private def String generateRoleCommentForFields(StorageVariable storageVariable){
+		var comment = "//Modifiable by: ";
+		
+		if(storageVariable.roles.empty){
+			return comment + "Nothing"
+		}
+		
+		var roles = '''«FOR role : storageVariable.roles SEPARATOR', '»«role.name»«ENDFOR»''';
+	
+		return comment + roles; 	
 	}
 
 	private def SystemComponent findSystemComponentForCurrentTargetComponent() {
@@ -95,14 +128,12 @@ class PCM2SolidityGeneratorContent {
 	private def generateMethodDefinitions(
 		Iterable<OperationSignature> operationSignatures) '''«FOR operationSignature : operationSignatures SEPARATOR '{
 	// TODO: implement and verify auto-generated method stub
-	revert("TODO: auto-generated method stub")
+	revert("TODO: auto-generated method stub");
 }
-
 ' AFTER '{
 	// TODO: implement and verify auto-generated method stub
-	revert("TODO: auto-generated method stub")
+	revert("TODO: auto-generated method stub");
 }
-
 '»
 	«generateCommentsForMethod(operationSignature)»
 	«generateMethodDeclarationWithoutSemicolon(operationSignature)»«ENDFOR»
@@ -123,7 +154,7 @@ class PCM2SolidityGeneratorContent {
 '''
 
 	protected def String generateCommentsForMethod(OperationSignature signature) {
-		return ""
+		return acGenerator.generateProofObligationsForOperation(signature);
 	}
 
 	protected def String generateCommentsForEvents(EventType eventtype) {
@@ -135,7 +166,7 @@ class PCM2SolidityGeneratorContent {
 		val methodName = operationSignature.getMethodName
 		val modifierUsages = acGenerator.generateModifierUsageDefitions(operationSignature)
 		val parameterDeclarations = '''«FOR parameter : operationSignature.parameters__OperationSignature SEPARATOR ', '»«parameter.dataType__Parameter.handleDataTypeName» «parameter.getParameterName»«ENDFOR»'''
-		return '''function «methodName»(«parameterDeclarations») «modifierUsages» «returnType»'''
+		return '''function «methodName»(«parameterDeclarations») public «modifierUsages» «returnType»'''
 	}
 
 	protected def String generateEventDeclarationWithoutSemicolon(EventType eventtype) {
@@ -167,7 +198,7 @@ class PCM2SolidityGeneratorContent {
 
 		var returnedTypes = handleReturnDataType(returnType);
 
-		return '''public returns («returnedTypes» output)''';
+		return '''returns («returnedTypes» output)''';
 	}
 
 	private dispatch def String handleDataTypeName(PrimitiveDataType dt) {
@@ -189,7 +220,7 @@ class PCM2SolidityGeneratorContent {
 	}
 
 	private dispatch def String handleReturnDataType(
-		PrimitiveDataType dt) '''«getTargetFileNameForPrimitiveDataType(dt)»'''
+		PrimitiveDataType dt) '''«getTargetNameForDataType(dt)»'''
 
 	private dispatch def String handleReturnDataType(CompositeDataType dt) {
 		var returnTypes = "";
@@ -203,5 +234,13 @@ class PCM2SolidityGeneratorContent {
 	}
 
 	private dispatch def String handleReturnDataType(CollectionDataType dt) '''«getTargetNameForDataType(dt)»'''
+	
+	private def String appendNewlineWhenNotEmpty(String stringToModify){
+		if(!stringToModify.empty){
+			return String.format("%s\n", stringToModify);
+		} else {
+			return stringToModify
+		}
+	}
 
 }

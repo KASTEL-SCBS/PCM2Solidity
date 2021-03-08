@@ -62,7 +62,7 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 				val content = generateContent(element);
 
 				if (content !== null && !content.equals("")) {
-					val folderName = targetFolderPrefix + getTargetName(element, false);
+					val folderName = targetFolderPrefix;
 					val fileName = getTargetFileNameForNamedElement(element) + getTargetFileExt();
 					val contentAndFileName = new Triplet<String, String, String>(content, folderName, fileName);
 					contents.add(contentAndFileName);

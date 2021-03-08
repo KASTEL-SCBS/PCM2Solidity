@@ -18,6 +18,7 @@
       <genFeatures property="None" children="true" createChild="true" propertySortChoices="true"
           ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/accessibleOperationsByRole"/>
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/accOperationDefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/storage"/>
     </genClasses>
     <genClasses ecoreClass="rbac4smartcontracts.ecore#//Role">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//Role/alternativeEncoding"/>
@@ -27,15 +28,23 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//OperationAccessibleByRoles/operation"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//OperationAccessibleByRoles/operationprovidedrole"/>
     </genClasses>
-    <genClasses ecoreClass="rbac4smartcontracts.ecore#//AccessControlCheckingOperation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControlCheckingOperation/operation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControlCheckingOperation/roleDetermining"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControlCheckingOperation/operationprovidedrole"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControlCheckingOperation/identity"/>
+    <genClasses ecoreClass="rbac4smartcontracts.ecore#//AccessControllingOperation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/operation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/roleDetermining"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/operationprovidedrole"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/identity"/>
     </genClasses>
     <genClasses ecoreClass="rbac4smartcontracts.ecore#//AlternativeEncoding">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AlternativeEncoding/dataType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rbac4smartcontracts.ecore#//AlternativeEncoding/content"/>
+    </genClasses>
+    <genClasses ecoreClass="rbac4smartcontracts.ecore#//Storage">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//Storage/storagevariable"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//Storage/smartContract"/>
+    </genClasses>
+    <genClasses ecoreClass="rbac4smartcontracts.ecore#//StorageVariable">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//StorageVariable/dataType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//StorageVariable/roles"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
