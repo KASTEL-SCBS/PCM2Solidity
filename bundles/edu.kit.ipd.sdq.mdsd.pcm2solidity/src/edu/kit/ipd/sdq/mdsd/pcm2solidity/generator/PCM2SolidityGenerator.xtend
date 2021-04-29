@@ -8,7 +8,6 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 import org.palladiosimulator.pcm.system.System
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.internal.xtend.util.Triplet
 import org.palladiosimulator.pcm.repository.BasicComponent
 import org.eclipse.emf.ecore.EObject
@@ -20,18 +19,21 @@ import java.util.Collection
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemComponent
 import edu.kit.ipd.sdq.mdsd.pcm2solidity.systemdatastructure.SystemStructureBuilder
 import edu.kit.kastel.scbs.rbac4smartcontracts.AccessControl4SmartContractsRepository
+import edu.kit.ipd.sdq.mdsd.pcm2solidity.generator.accesscontrol.AccessControlGenerator
+import edu.kit.ipd.sdq.mdsd.pcm2solidity.generator.templates.SolidityClassGenerationTemplate
+import edu.kit.ipd.sdq.mdsd.pcm2solidity.generator.templates.ClassGenerationTemplate
 
 class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 
 	private System targetSystem;
 	private Collection<SystemComponent> systemComponents;
 	private SystemStructureBuilder builder;
-	private PCM2SolidityGeneratorContent contentGenerator;
-	private AccessControl4SmartContractsRepository acRepository;
+	private AccessControl4SmartContractsRepository acRepository; 
+	private AccessControlGenerator acGenerator;
+	private SolidityContractGenerator contractGenerator;
 
 	public new() {
 		this.builder = new SystemStructureBuilder;
-		this.contentGenerator = new PCM2SolidityGeneratorContent;
 	}
 
 	override generateContentsFromResource(Resource inputResource) {
@@ -42,7 +44,7 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 				if (targetSystem === null) {
 					this.targetSystem = element;
 					this.systemComponents = builder.generateSystemComponents(targetSystem);
-					contentGenerator.currentSystem = systemComponents;
+					//contentGenerator.currentSystem = systemComponents;
 					return contents;
 				}
 			} else if (element instanceof AccessControl4SmartContractsRepository){
@@ -57,21 +59,42 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 	}
 
 	private def void generateAndAddContents(Resource resource, List<Triplet<String, String, String>> contents) {
+		this.contractGenerator = new SolidityContractGenerator(systemComponents, acRepository)
+		
+		//TODO: Could reduce redundancy by passing contents and add in central method
+		acGenerator = new AccessControlGenerator(acRepository, true);
+		var acContent = acGenerator.generate();
+		if (acContent !== null && !acContent.equals("")) {
+			contents.add(generateContentTriplet(acContent, AccessControlGenerator.accessControlName));
+		}
+		
 		for (element : resource.getAllContentsIterable()) {
 			if (element instanceof BasicComponent) {
 				val content = generateContent(element);
 
 				if (content !== null && !content.equals("")) {
-					val folderName = targetFolderPrefix;
-					val fileName = getTargetFileNameForNamedElement(element) + getTargetFileExt();
-					val contentAndFileName = new Triplet<String, String, String>(content, folderName, fileName);
-					contents.add(contentAndFileName);
+					contents.add(generateContentTriplet(content, element));
 				}
 			}
 		}
 
 		contents.generateAndAddOptionalContents;
 	}
+	
+	
+	private def Triplet<String, String, String> generateContentTriplet(String content, String fileName){
+		val folderName = targetFolderPrefix;
+		val fileNameWithExtension = fileName + getTargetFileExt();
+		val contentAndFileName = new Triplet<String, String, String>(content, folderName, fileNameWithExtension);
+		
+		return contentAndFileName;
+	}
+	
+	private def Triplet<String, String, String> generateContentTriplet(String content, BasicComponent component){
+		return generateContentTriplet(content, getTargetFileNameForNamedElement(component));
+	}
+	
+	
 
 	override getFileNameForResource(Resource inputResource) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
@@ -113,9 +136,14 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 
 	private def String generateContent(EObject element) {
 		switch element {
-			BasicComponent: postProcessGeneratedContents(contentGenerator.generateContent(element, systemComponents, acRepository))
+			BasicComponent: postProcessGeneratedContents(generateContract(element))
 			EObject: generateContentUnexpectedEObject(element)
 		}
+	}
+	
+	private def String generateContract(BasicComponent component){
+		contractGenerator.currentTarget = component;
+		return contractGenerator.generate();
 	}
 
 	def generateContentUnexpectedEObject(EObject object) {
@@ -124,7 +152,7 @@ class PCM2SolidityGenerator extends AbstractEcore2TxtGenerator {
 
 	protected def void generateAndAddOptionalContents(
 		List<Triplet<String, String, String>> contentsForFolderAndFileNames) {
-		// No optional content needed for plain pcm2java
+		// No optional content needed
 	}
 
 }

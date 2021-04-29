@@ -6,7 +6,7 @@
     editorDirectory="/edu.kit.kastel.scbs.rbac4smartcontracts.editor/src-gen" modelPluginID="edu.kit.kastel.scbs.rbac4smartcontracts"
     modelName="Rbac4smartcontracts" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     codeFormatting="true" importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0"
-    copyrightFields="false" usedGenPackages="../../edu.kit.ipd.sdq.composition.securityanalyses.basic/model/basic.genmodel#//basic ../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore ../../de.uka.ipd.sdq.identifier/model/identifier.genmodel#//identifier ../../org.palladiosimulator.pcm/model/pcm.genmodel#//pcm ../../de.uka.ipd.sdq.probfunction/model/ProbabilityFunction.genmodel#//probfunction ../../de.uka.ipd.sdq.stoex/model/stoex.genmodel#//stoex ../../de.uka.ipd.sdq.units/model/Units.genmodel#//units"
+    copyrightFields="false" usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore ../../de.uka.ipd.sdq.identifier/model/identifier.genmodel#//identifier ../../org.palladiosimulator.pcm/model/pcm.genmodel#//pcm ../../de.uka.ipd.sdq.probfunction/model/ProbabilityFunction.genmodel#//probfunction ../../de.uka.ipd.sdq.stoex/model/stoex.genmodel#//stoex ../../de.uka.ipd.sdq.units/model/Units.genmodel#//units"
     operationReflection="true" importOrganizing="true">
   <foreignModel>rbac4smartcontracts.ecore</foreignModel>
   <testsDirectory xsi:nil="true"/>
@@ -17,7 +17,6 @@
           ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/roles"/>
       <genFeatures property="None" children="true" createChild="true" propertySortChoices="true"
           ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/accessibleOperationsByRole"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/accOperationDefs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControl4SmartContractsRepository/storage"/>
     </genClasses>
     <genClasses ecoreClass="rbac4smartcontracts.ecore#//Role">
@@ -27,12 +26,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//OperationAccessibleByRoles/role"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//OperationAccessibleByRoles/operation"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//OperationAccessibleByRoles/operationprovidedrole"/>
-    </genClasses>
-    <genClasses ecoreClass="rbac4smartcontracts.ecore#//AccessControllingOperation">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/operation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/roleDetermining"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/operationprovidedrole"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AccessControllingOperation/identity"/>
     </genClasses>
     <genClasses ecoreClass="rbac4smartcontracts.ecore#//AlternativeEncoding">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//AlternativeEncoding/dataType"/>
@@ -46,5 +39,12 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//StorageVariable/dataType"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rbac4smartcontracts.ecore#//StorageVariable/roles"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="rbac4smartcontracts.ecore#//IdentifiedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rbac4smartcontracts.ecore#//IdentifiedElement/id"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="rbac4smartcontracts.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rbac4smartcontracts.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="rbac4smartcontracts.ecore#//Entity"/>
   </genPackages>
 </genmodel:GenModel>
