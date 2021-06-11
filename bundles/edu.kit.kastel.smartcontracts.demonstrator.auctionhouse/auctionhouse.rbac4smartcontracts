@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rbac4smartcontracts:AccessControl4SmartContractsRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rbac4smartcontracts="http://www.example.org/rbac4smartcontracts" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2">
+  <roles name="Manager"/>
+  <roles name="Bidder"/>
+  <roles name="Seller"/>
+  <accessibleOperationsByRole role="//@roles.1">
+    <operation href="auctionhouse.repository#_czk5YFZOEeuG4bqqc8dfGQ"/>
+    <operationprovidedrole href="auctionhouse.repository#_PIgloFZQEeuG4bqqc8dfGQ"/>
+  </accessibleOperationsByRole>
+  <accessibleOperationsByRole role="//@roles.2 //@roles.1">
+    <operation href="auctionhouse.repository#_bQhyQFZOEeuG4bqqc8dfGQ"/>
+    <operationprovidedrole href="auctionhouse.repository#_QCXl0FZQEeuG4bqqc8dfGQ"/>
+  </accessibleOperationsByRole>
+  <accessibleOperationsByRole role="//@roles.1 //@roles.2">
+    <operation href="auctionhouse.repository#_red18FZNEeuG4bqqc8dfGQ"/>
+    <operationprovidedrole href="auctionhouse.repository#_sCmWYFZQEeuG4bqqc8dfGQ"/>
+  </accessibleOperationsByRole>
+  <accessibleOperationsByRole role="//@roles.0">
+    <operation href="auctionhouse.repository#_clvHIFZNEeuG4bqqc8dfGQ"/>
+    <operationprovidedrole href="auctionhouse.repository#_OmAVgFZQEeuG4bqqc8dfGQ"/>
+  </accessibleOperationsByRole>
+  <accessibleOperationsByRole role="//@roles.1">
+    <operation href="auctionhouse.repository#_kDxwkFZOEeuG4bqqc8dfGQ"/>
+    <operationprovidedrole href="auctionhouse.repository#_PIgloFZQEeuG4bqqc8dfGQ"/>
+  </accessibleOperationsByRole>
+  <storage>
+    <storagevariable name="auctionClosed" roles="//@roles.1 //@roles.2">
+      <dataType xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.2"/>
+    </storagevariable>
+    <storagevariable name="manager_address">
+      <dataType xsi:type="repository:CompositeDataType" href="auctionhouse.repository#_oR1IkFZSEeuG4bqqc8dfGQ"/>
+    </storagevariable>
+    <storagevariable name="seller_address">
+      <dataType xsi:type="repository:CompositeDataType" href="auctionhouse.repository#_oR1IkFZSEeuG4bqqc8dfGQ"/>
+    </storagevariable>
+    <storagevariable name="bidders" roles="//@roles.0">
+      <dataType xsi:type="repository:CollectionDataType" href="auctionhouse.repository#_DfUKwIAaEeuSVd0D3W24Sg"/>
+    </storagevariable>
+    <smartContract href="auctionhouse.repository#_AXQfMFZNEeuG4bqqc8dfGQ"/>
+  </storage>
+</rbac4smartcontracts:AccessControl4SmartContractsRepository>

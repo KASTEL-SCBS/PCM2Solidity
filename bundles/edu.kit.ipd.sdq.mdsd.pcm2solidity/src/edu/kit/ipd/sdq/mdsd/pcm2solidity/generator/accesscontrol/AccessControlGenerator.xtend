@@ -8,7 +8,6 @@ import org.palladiosimulator.pcm.repository.BasicComponent
 
 class AccessControlGenerator extends SolidityClassGenerationTemplate {
 	private AccessControl4SmartContractsRepository acRepository;
-	@Accessors(PUBLIC_GETTER) private boolean isAccessControlAlreadyGenerated;
 	private boolean fullAcGeneration;
 	
 	public static final String accessControlName = '''AccessCtrl''';
@@ -23,7 +22,6 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 
 	new(AccessControl4SmartContractsRepository acRepository, boolean fullAcGeneration) {
 		this.acRepository = acRepository;
-		this.isAccessControlAlreadyGenerated = false;
 		this.fullAcGeneration = fullAcGeneration;
 	}
 
@@ -157,7 +155,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 		return '''pragma solidity «solidityVersion»;''';
 	}
 	
-	//TODO: Refused Bequest --> Use different design approach. 
+	//TODO: Refused Bequest --> Use different design approach. See @ClassGenerationTemplate.xtend 
 	override setCurrentTarget(BasicComponent component) {
 		return;
 	}

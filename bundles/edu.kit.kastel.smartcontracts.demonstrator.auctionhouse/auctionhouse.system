@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ASCII"?>
+<system:System xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:composition="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2" id="_40g2wFZdEeuG4bqqc8dfGQ" entityName="Auction House System">
+  <assemblyContexts__ComposedStructure id="_8CxigFZdEeuG4bqqc8dfGQ" entityName="AuctionManager">
+    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="auctionhouse.repository#_OZqU4FZLEeuG4bqqc8dfGQ"/>
+  </assemblyContexts__ComposedStructure>
+  <assemblyContexts__ComposedStructure id="_ACSsEFZeEeuG4bqqc8dfGQ" entityName="SingleAuction">
+    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="auctionhouse.repository#_AXQfMFZNEeuG4bqqc8dfGQ"/>
+  </assemblyContexts__ComposedStructure>
+  <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_pMh_0FZeEeuG4bqqc8dfGQ" entityName="newAssemblyConnector" requiringAssemblyContext_AssemblyConnector="_8CxigFZdEeuG4bqqc8dfGQ" providingAssemblyContext_AssemblyConnector="_ACSsEFZeEeuG4bqqc8dfGQ">
+    <providedRole_AssemblyConnector href="auctionhouse.repository#_OmAVgFZQEeuG4bqqc8dfGQ"/>
+    <requiredRole_AssemblyConnector href="auctionhouse.repository#_3asQAFZQEeuG4bqqc8dfGQ"/>
+  </connectors__ComposedStructure>
+  <connectors__ComposedStructure xsi:type="composition:ProvidedDelegationConnector" id="_XdaT4GxxEeuOu4dIlHyiKA" entityName="newProvidedDelegationConnector" outerProvidedRole_ProvidedDelegationConnector="_Tz7EsGxxEeuOu4dIlHyiKA" assemblyContext_ProvidedDelegationConnector="_ACSsEFZeEeuG4bqqc8dfGQ">
+    <innerProvidedRole_ProvidedDelegationConnector href="auctionhouse.repository#_PIgloFZQEeuG4bqqc8dfGQ"/>
+  </connectors__ComposedStructure>
+  <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_Tz7EsGxxEeuOu4dIlHyiKA" entityName="Bidding">
+    <providedInterface__OperationProvidedRole href="auctionhouse.repository#_gMPTwFZNEeuG4bqqc8dfGQ"/>
+  </providedRoles_InterfaceProvidingEntity>
+</system:System>
