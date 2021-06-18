@@ -63,18 +63,20 @@ contract SingleAuction{
 	}
 	
 	modifier onlyBidder {
+		
 		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.BIDDER),
 					"Access denied");
 		_;
 	}
 	modifier onlyBidderSeller {
 		
-		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.SELLER) || 
-		accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.BIDDER),
+		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.BIDDER) || 
+		accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.SELLER),
 					"Access denied");
 		_;
 	}
 	modifier onlyManager {
+		
 		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.MANAGER),
 					"Access denied");
 		_;

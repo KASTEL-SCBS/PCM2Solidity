@@ -17,8 +17,8 @@ contract AuctionManager{
 	
 	modifier onlyBidderSeller {
 		
-		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.SELLER) || 
-		accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.BIDDER),
+		require(accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.BIDDER) || 
+		accessCtrl.checkAccess(msg.sender, accessCtrl.Roles.SELLER),
 					"Access denied");
 		_;
 	}

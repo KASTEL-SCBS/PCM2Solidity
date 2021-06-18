@@ -3,7 +3,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="rbac4smartcontracts" nsURI="http://www.example.org/rbac4smartcontracts"
     nsPrefix="rbac4smartcontracts">
   <eClassifiers xsi:type="ecore:EClass" name="AccessControl4SmartContractsRepository"
-      eSuperTypes="#//IdentifiedElement">
+      eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//Identifier">
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
         eType="#//Role" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessibleOperationsByRole"
@@ -11,7 +11,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="storage" upperBound="-1"
         eType="#//Storage" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Role" eSuperTypes="#//Entity">
+  <eClassifiers xsi:type="ecore:EClass" name="Role" eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//Entity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="alternativeEncoding" eType="#//AlternativeEncoding"
         containment="true"/>
   </eClassifiers>
@@ -29,23 +29,16 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" lowerBound="1"
         eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Storage" eSuperTypes="#//IdentifiedElement">
+  <eClassifiers xsi:type="ecore:EClass" name="Storage" eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//Identifier">
     <eStructuralFeatures xsi:type="ecore:EReference" name="storagevariable" upperBound="-1"
         eType="#//StorageVariable" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="smartContract" lowerBound="1"
         eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/BasicComponent"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StorageVariable" eSuperTypes="#//Entity">
+  <eClassifiers xsi:type="ecore:EClass" name="StorageVariable" eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//Entity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" lowerBound="1"
         eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/DataType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" lowerBound="1" upperBound="-1"
         eType="#//Role"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IdentifiedElement" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType ../../org.eclipse.emf.ecore/model/Ecore.ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Entity" abstract="true" eSuperTypes="#//NamedElement #//IdentifiedElement"/>
 </ecore:EPackage>

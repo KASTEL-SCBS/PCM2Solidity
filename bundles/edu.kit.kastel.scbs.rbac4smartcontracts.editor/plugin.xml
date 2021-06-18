@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated rbac4smartcontracts -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="edu.kit.kastel.scbs.rbac4smartcontracts.presentation.Rbac4smartcontractsModelWizardID"
+            name="%_UI_Rbac4smartcontractsModelWizard_label"
+            class="edu.kit.kastel.scbs.rbac4smartcontracts.presentation.Rbac4smartcontractsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/Rbac4smartcontractsModelFile.gif">
+         <description>%_UI_Rbac4smartcontractsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated rbac4smartcontracts -->
+      <editor
+            id="edu.kit.kastel.scbs.rbac4smartcontracts.presentation.Rbac4smartcontractsEditorID"
+            name="%_UI_Rbac4smartcontractsEditor_label"
+            icon="icons/full/obj16/Rbac4smartcontractsModelFile.gif"
+            extensions="rbac4smartcontracts"
+            class="edu.kit.kastel.scbs.rbac4smartcontracts.presentation.Rbac4smartcontractsEditor"
+            contributorClass="edu.kit.kastel.scbs.rbac4smartcontracts.presentation.Rbac4smartcontractsActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

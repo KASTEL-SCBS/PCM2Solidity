@@ -128,7 +128,7 @@ _;
 	}
 
 	def String buildAccessControlQuery(Role role) {
-		return '''«AccessControlGenerator.accessControlName.toFirstLower».«AccessControlGenerator.accessCheckingFunctionName»(msg.sender, «AccessControlGenerator.accessControlName.toFirstLower».«AccessControlGenerator.rolesEnumName».«role.name.toUpperCase»)''';
+		return '''«AccessControlGenerator.accessControlName.toFirstLower».«AccessControlGenerator.accessCheckingFunctionName»(msg.sender, «AccessControlGenerator.accessControlName.toFirstLower».«AccessControlGenerator.rolesEnumName».«role.entityName.toUpperCase»)''';
 	}
 
 	def String generateModifierUsageDefitions(OperationSignature signature) {
@@ -243,7 +243,7 @@ _;
 	private def String generateUnmodifyingProofObligationForSingleTypeStorageVariable(StorageVariable storageVariable) {
 		if (!(storageVariable.dataType instanceof CollectionDataType) &&
 			storageVariable.dataType.checkForSolcComparisonCompatibility) {
-			return '''«solcVerifyPostConditionPrelude» «storageVariable.name» == «solcVerifyOld»«getTargetNameForDataType(storageVariable.dataType)»(«storageVariable.name»)'''
+			return '''«solcVerifyPostConditionPrelude» «storageVariable.entityName» == «solcVerifyOld»«getTargetNameForDataType(storageVariable.dataType)»(«storageVariable.entityName»)'''
 		}
 
 		return "";
@@ -254,7 +254,7 @@ _;
 
 		if (storageVariable.dataType instanceof CollectionDataType &&
 			storageVariable.dataType.checkForSolcComparisonCompatibility) {
-			return '''«solcVerifyPostConditionPrelude» forall (uint i) (!( 0 <= i && i < «storageVariable.name».length) || «storageVariable.name»[i] == «solcVerifyOld»«getTargetNameForDataType((storageVariable.dataType as CollectionDataType).innerType_CollectionDataType)»(«storageVariable.name»[i]))'''
+			return '''«solcVerifyPostConditionPrelude» forall (uint i) (!( 0 <= i && i < «storageVariable.entityName».length) || «storageVariable.entityName»[i] == «solcVerifyOld»«getTargetNameForDataType((storageVariable.dataType as CollectionDataType).innerType_CollectionDataType)»(«storageVariable.entityName»[i]))'''
 		}
 
 		return "";

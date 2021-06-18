@@ -91,7 +91,7 @@ class SolidityContractGenerator extends SolidityClassGenerationTemplate{
 		
 		return '''«FOR storageVariable : storageVariables»
 		«generateRoleCommentForFields(storageVariable)»
-		«getTargetNameForDataType(storageVariable.dataType)» «storageVariable.name.toFirstLower»; //TODO: Auto-generated Field«ENDFOR»'''
+		«getTargetNameForDataType(storageVariable.dataType)» «storageVariable.entityName.toFirstLower»; //TODO: Auto-generated Field«ENDFOR»'''
 	}
 	
 	private def String generateRoleCommentForFields(StorageVariable storageVariable){
@@ -101,7 +101,7 @@ class SolidityContractGenerator extends SolidityClassGenerationTemplate{
 			return comment + "Nothing"
 		}
 		
-		var roles = '''«FOR role : storageVariable.roles SEPARATOR', '»«role.name»«ENDFOR»''';
+		var roles = '''«FOR role : storageVariable.roles SEPARATOR', '»«role.entityName»«ENDFOR»''';
 	
 		return comment + roles; 	
 	}

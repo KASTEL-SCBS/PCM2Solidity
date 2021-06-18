@@ -68,7 +68,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 
 	private def String generateEnumRoles() {
 			
-		var standardRoles = '''«FOR role : acRepository.roles SEPARATOR ", "»«role.name.toUpperCase»«ENDFOR»'''
+		var standardRoles = '''«FOR role : acRepository.roles SEPARATOR ", "»«role.entityName.toUpperCase»«ENDFOR»'''
 		
 		return standardRoles + adminIfFullAccessControlGeneration();
 	}
@@ -80,7 +80,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 	def protected generateMappings() {
 		return '''
 		«IF fullAcGeneration»
-			«FOR role : acRepository.roles SEPARATOR "\n"»«roleMapping» «role.name.toLowerCase»s;«ENDFOR»
+			«FOR role : acRepository.roles SEPARATOR "\n"»«roleMapping» «role.entityName.toLowerCase»s;«ENDFOR»
 			«roleMapping» «admin.toLowerCase»s;
 «ELSE»«""»
 «ENDIF»'''
@@ -104,7 +104,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 		public function «edu.kit.ipd.sdq.mdsd.pcm2solidity.generator.accesscontrol.AccessControlGenerator.accessCheckingFunctionName»(«standardCheckParameters») returns (bool result) {
 			«IF fullAcGeneration»
 				«FOR role : acRepository.roles»
-				«genericRoleCheckingBuilder(role.name, '''return «role.name.toLowerCase»s[«addressName»];''')»
+				«genericRoleCheckingBuilder(role.entityName, '''return «role.entityName.toLowerCase»s[«addressName»];''')»
 			«ENDFOR»
 				«genericRoleCheckingBuilder(admin, '''return «admin.toLowerCase»s[«addressName»];''')»
 «ELSE» //TODO: Implement
@@ -122,7 +122,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 		public function addToRole(«standardCheckParameters») «onlyAdmin» {
 			«IF fullAcGeneration»
 			«FOR role : acRepository.roles»
-				«genericRoleCheckingBuilder(role.name, '''«role.name.toLowerCase»s[«addressName»] = true;''')»
+				«genericRoleCheckingBuilder(role.entityName, '''«role.entityName.toLowerCase»s[«addressName»] = true;''')»
 			«ENDFOR»
 			«genericRoleCheckingBuilder(admin, '''«admin.toLowerCase»s[«addressName»] = true;''')»
 «ELSE» //TODO: Implement
@@ -133,7 +133,7 @@ class AccessControlGenerator extends SolidityClassGenerationTemplate {
 		public function addToRole(«standardCheckParameters») «onlyAdmin» {
 			«IF fullAcGeneration»
 			«FOR role : acRepository.roles»
-				«genericRoleCheckingBuilder(role.name, '''«role.name.toLowerCase»s[«addressName»] = false;''')»
+				«genericRoleCheckingBuilder(role.entityName, '''«role.entityName.toLowerCase»s[«addressName»] = false;''')»
 			«ENDFOR»
 			«genericRoleCheckingBuilder(admin, '''«admin.toLowerCase»s[«addressName»] = false;''')»
 «ELSE» //TODO: Implement
