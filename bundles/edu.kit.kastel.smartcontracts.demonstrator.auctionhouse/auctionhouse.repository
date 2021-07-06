@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:seff="http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2" id="_JMeeUFZLEeuG4bqqc8dfGQ" entityName="New Repository">
+  <components__Repository xsi:type="repository:BasicComponent" id="_OZqU4FZLEeuG4bqqc8dfGQ" entityName="AuctionManager">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_sCmWYFZQEeuG4bqqc8dfGQ" entityName="AuctionManagement" providedInterface__OperationProvidedRole="_l_OmEFZNEeuG4bqqc8dfGQ"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_3asQAFZQEeuG4bqqc8dfGQ" entityName="SingleAuctionManagement" requiredInterface__OperationRequiredRole="_XxDQIFZNEeuG4bqqc8dfGQ"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_sCmWYVZQEeuG4bqqc8dfGQ" describedService__SEFF="_red18FZNEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_sCmWYlZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_sCmWY1ZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_sCmWY1ZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_sCmWYlZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+  </components__Repository>
+  <components__Repository xsi:type="repository:BasicComponent" id="_AXQfMFZNEeuG4bqqc8dfGQ" entityName="SingleAuction">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_OmAVgFZQEeuG4bqqc8dfGQ" entityName="SingleAuctionManagement" providedInterface__OperationProvidedRole="_XxDQIFZNEeuG4bqqc8dfGQ"/>
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_PIgloFZQEeuG4bqqc8dfGQ" entityName="Bidding" providedInterface__OperationProvidedRole="_gMPTwFZNEeuG4bqqc8dfGQ"/>
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_PqsFoFZQEeuG4bqqc8dfGQ" entityName="Selling" providedInterface__OperationProvidedRole="_n-eEgFZOEeuG4bqqc8dfGQ"/>
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_QCXl0FZQEeuG4bqqc8dfGQ" entityName="Closing" providedInterface__OperationProvidedRole="_Y5aJ4FZOEeuG4bqqc8dfGQ"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_zOQH8FZUEeuG4bqqc8dfGQ" entityName="AccessControlling"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_OmF1EFZQEeuG4bqqc8dfGQ" describedService__SEFF="_clvHIFZNEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_OmGcIFZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_OmGcIVZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_OmGcIVZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_OmGcIFZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_PIhMsFZQEeuG4bqqc8dfGQ" describedService__SEFF="_czk5YFZOEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_PIhMsVZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_PIhMslZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_PIhMslZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_PIhMsVZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_PIhzwFZQEeuG4bqqc8dfGQ" describedService__SEFF="_kDxwkFZOEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_PIhzwVZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_PIhzwlZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_PIhzwlZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_PIhzwVZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_PqsssFZQEeuG4bqqc8dfGQ" describedService__SEFF="_ovSdcFZOEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_PqsssVZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_PqssslZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_PqssslZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_PqsssVZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_QCXl0VZQEeuG4bqqc8dfGQ" describedService__SEFF="_bQhyQFZOEeuG4bqqc8dfGQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_QCXl0lZQEeuG4bqqc8dfGQ" entityName="start" successor_AbstractAction="_QCYM4FZQEeuG4bqqc8dfGQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_QCYM4FZQEeuG4bqqc8dfGQ" entityName="stop" predecessor_AbstractAction="_QCXl0lZQEeuG4bqqc8dfGQ"/>
+    </serviceEffectSpecifications__BasicComponent>
+  </components__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_XxDQIFZNEeuG4bqqc8dfGQ" entityName="SingleAuctionManagement">
+    <signatures__OperationInterface id="_clvHIFZNEeuG4bqqc8dfGQ" entityName="emergencyShutdown"/>
+  </interfaces__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_gMPTwFZNEeuG4bqqc8dfGQ" entityName="Bidding">
+    <signatures__OperationInterface id="_czk5YFZOEeuG4bqqc8dfGQ" entityName="bid">
+      <parameters__OperationSignature parameterName="value">
+        <dataType__Parameter xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.0"/>
+      </parameters__OperationSignature>
+    </signatures__OperationInterface>
+    <signatures__OperationInterface id="_kDxwkFZOEeuG4bqqc8dfGQ" entityName="withdraw"/>
+  </interfaces__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_l_OmEFZNEeuG4bqqc8dfGQ" entityName="AuctionManagement">
+    <signatures__OperationInterface id="_red18FZNEeuG4bqqc8dfGQ" entityName="createNewAuction">
+      <parameters__OperationSignature dataType__Parameter="_uxiJMFZNEeuG4bqqc8dfGQ" parameterName="item"/>
+      <parameters__OperationSignature parameterName="expiration">
+        <dataType__Parameter xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.0"/>
+      </parameters__OperationSignature>
+    </signatures__OperationInterface>
+  </interfaces__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_Y5aJ4FZOEeuG4bqqc8dfGQ" entityName="Closing">
+    <signatures__OperationInterface id="_bQhyQFZOEeuG4bqqc8dfGQ" entityName="close">
+      <returnType__OperationSignature xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.2"/>
+    </signatures__OperationInterface>
+  </interfaces__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_n-eEgFZOEeuG4bqqc8dfGQ" entityName="Selling">
+    <signatures__OperationInterface id="_ovSdcFZOEeuG4bqqc8dfGQ" entityName="sellerWithdraw"/>
+  </interfaces__Repository>
+  <dataTypes__Repository xsi:type="repository:CompositeDataType" id="_uxiJMFZNEeuG4bqqc8dfGQ" entityName="Item">
+    <innerDeclaration_CompositeDataType entityName="tokenLink">
+      <datatype_InnerDeclaration xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.1"/>
+    </innerDeclaration_CompositeDataType>
+  </dataTypes__Repository>
+  <dataTypes__Repository xsi:type="repository:CompositeDataType" id="_oR1IkFZSEeuG4bqqc8dfGQ" entityName="address">
+    <innerDeclaration_CompositeDataType entityName="Address">
+      <datatype_InnerDeclaration xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.5"/>
+    </innerDeclaration_CompositeDataType>
+  </dataTypes__Repository>
+  <dataTypes__Repository xsi:type="repository:CompositeDataType" id="_D-Hy8WqrEeuq84graGCkuA" entityName="Roles">
+    <innerDeclaration_CompositeDataType entityName="Role">
+      <datatype_InnerDeclaration xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.0"/>
+    </innerDeclaration_CompositeDataType>
+  </dataTypes__Repository>
+  <dataTypes__Repository xsi:type="repository:CollectionDataType" id="_DfUKwIAaEeuSVd0D3W24Sg" entityName="Bidders" innerType_CollectionDataType="_oR1IkFZSEeuG4bqqc8dfGQ"/>
+</repository:Repository>

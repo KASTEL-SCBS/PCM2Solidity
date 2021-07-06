@@ -12,12 +12,12 @@ Export-Package: edu.kit.kastel.scbs.rbac4smartcontracts,
  edu.kit.kastel.scbs.rbac4smartcontracts.impl,
  edu.kit.kastel.scbs.rbac4smartcontracts.util
 Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
- edu.kit.ipd.sdq.composition.securityanalyses.basic;visibility:=reexport,
  de.uka.ipd.sdq.identifier;visibility:=reexport,
  org.palladiosimulator.pcm;visibility:=reexport,
  de.uka.ipd.sdq.probfunction;visibility:=reexport,
  de.uka.ipd.sdq.stoex;visibility:=reexport,
  de.uka.ipd.sdq.units;visibility:=reexport,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ tools.mdsd.modelingfoundations.identifier;bundle-version="0.1.0";visibility:=reexport
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy

@@ -27,8 +27,8 @@ class PCM2SolidityNaming {
 		var modifierName = "";
 		
 		
-		for(role : roles.sortBy[x | x.name]){
-			modifierName += role.name;
+		for(role : roles.sortBy[x | x.entityName]){
+			modifierName += role.entityName;
 		}
 		
 		if(modifierName.empty){
